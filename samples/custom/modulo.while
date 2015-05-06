@@ -1,0 +1,9 @@
+# Calculate `a` modulo `b`. The answer is in the variable `ans`.
+# Should output `ans` = 27.
+
+a := 258;
+b := 77;
+k := 0;
+while !(a - k * b <= b - 1) do
+    k := k + 1;
+ans := a - k * b

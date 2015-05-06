@@ -1,0 +1,244 @@
+######## bisection.while
+
+# Find a root with the bisection method for f(x) = x^2 - 100x + 2400.
+# True roots are `x` = 80 and `x` = 30.
+# Should terminate with `ans` = 40.
+
+# Iter vars
+N := 1;
+M := 1000;
+# Endpoints
+a := 0 - 1;
+b := 100;
+
+while N <= M do
+    N := N + 1;
+    x := (a + b) / 2; # Midpoint
+    fx := (x * x - 100 * x + 2400);
+    fa := (a * a - 100 * a + 2400);
+    if (fx = 0) then # Found solution
+        ans := x
+    else
+        skip;
+    # Check signs
+    if (fx <= 0) then
+        if (fa <= 0) then
+            a := x
+        else
+            b := x
+    else
+        if !(fa <= 0) then
+            a := x
+        else
+            b := x
+
+######## bubblesort.while
+
+# Sorts 5 integers
+# Should terminate with a=1, b=3, c=4, d=7 and e=8
+
+a := 7;
+b := 8;
+c := 4;
+d := 1;
+e := 3;
+swapped := 1;
+
+while swapped = 1 do
+    swapped := 0;
+
+    if b <= a then
+        swapped := 1;
+        tmp := a;
+        a := b;
+        b := tmp
+    else
+        skip;
+
+    if c <= b then
+        swapped := 1;
+        tmp := b;
+        b := c;
+        c := tmp
+    else
+        skip;
+
+    if d <= c then
+        swapped := 1;
+        tmp := c;
+        c := d;
+        d := tmp
+    else
+        skip;
+
+    if e <= d then
+        swapped := 1;
+        tmp := d;
+        d := e;
+        e := tmp
+    else
+        skip
+
+######## digit_sum.while
+
+# Calculates the digit sum of integer n
+# Should terminate with `ans` = 29
+
+n := 473825;
+sum := 0;
+
+(while !(n <= 0) do
+    # Calculate n modulo 10
+    k := 0;
+    (while !(n - k * 10 <= 9) do
+        k := k + 1);
+    mod := n - k * 10;
+
+    sum := sum + mod;
+    n := n / 10);
+
+ans := sum
+
+######## division_without_operator.while
+
+# Iterative integer division without using the division operator.
+# Should terminate with `ans` = 78.
+
+numer := 1024;
+denom := 13;
+temp := 0;
+n := 0;
+
+while temp <= (numer - denom) do
+    temp := temp + denom;
+    n := n + 1;
+
+ans := n
+
+######## exception_outside_try.while
+
+# should probably not give y = 3
+
+x := 100 / 0;
+try
+    y := 5
+catch
+    y := 3
+
+######## legendre.while
+
+# Calculate the Legendre symbol (a / p).
+# Should terminate with `ans` = 1.
+# (Note that the parameters need to be really small due to overflow.)
+
+# Parameters
+a := 22;
+p := 7;
+
+# Calculate exponent
+exp := p - 1;
+exp := exp / 2;
+
+# Calculate a^exp
+i := 1;
+e := a;
+(while i <= (exp - 1) do
+    a := a * e;
+    i := i + 1);
+
+# Reduce modulo p
+k := 0;
+(while !(a - k * p <= p - 1) do
+    k := k + 1);
+a := a - k * p;
+
+# Check symbol criteria
+ans := 0 - 999; # -999 = invalid
+if a = 1 then
+    ans := 1
+else
+    if a = (p - 1) then
+        ans := 0 - 1
+    else
+        skip
+
+######## modulo.while
+
+# Calculate `a` modulo `b`. The answer is in the variable `ans`.
+# Should output `ans` = 27.
+
+a := 258;
+b := 77;
+k := 0;
+while !(a - k * b <= b - 1) do
+    k := k + 1;
+ans := a - k * b
+
+######## newton_raphson.while
+
+# The Newton-Raphson method for f(x) = x^2 - 190x + 8400 w/o any iter limit.
+# True roots are `x` = 70 and `x` = 120.
+# Should terminate with `ans` = 69.
+
+delta := 4;
+epsilon := 3;
+x := 2; # Initial guess
+N := 0; # Number of iterations
+M := 1000; # Max number of iterations
+
+try
+    (while (epsilon <= delta & N <= M - 1) do
+        N := N + 1;
+        delta := (x * x - 190 * x + 8400) / (2 * x - 190);
+        x := x - delta;
+        # Abs
+        if delta <= (0 - 1) then
+            delta := delta * (0 - 1)
+        else
+            skip);
+    ans := x # Result
+catch
+    ans := 0
+
+######## prime.while
+
+# "Trial division" to decide whether `p` is prime, 1 = true, 0 = false.
+# Should output `ans` = 1.
+
+p := 127;
+i := 1;
+ans := 1;
+
+while i <= p - 2 do
+    i := i + 1;
+    # Calculate modulo
+    k := 0;
+    (while !(p - k * i <= i - 1) do
+        k := k + 1);
+    mod := p - k * i;
+
+    if mod = 0 then
+        ans := 0
+    else
+        skip
+
+######## try_empty.while
+
+# should not parse
+
+try
+catch
+    x := 5
+
+######## try_nested.while
+
+# should give x = 3
+
+try
+    x := 5 / 0;
+    try
+        x := 1
+    catch
+        x := 2
+catch
+    x := 3

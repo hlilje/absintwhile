@@ -1,0 +1,7 @@
+# should probably not give y = 3
+
+x := 100 / 0;
+try
+    y := 5
+catch
+    y := 3

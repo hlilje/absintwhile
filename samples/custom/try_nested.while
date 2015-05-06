@@ -1,0 +1,10 @@
+# should give x = 3
+
+try
+    x := 5 / 0;
+    try
+        x := 1
+    catch
+        x := 2
+catch
+    x := 3

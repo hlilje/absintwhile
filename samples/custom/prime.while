@@ -1,0 +1,19 @@
+# "Trial division" to decide whether `p` is prime, 1 = true, 0 = false.
+# Should output `ans` = 1.
+
+p := 127;
+i := 1;
+ans := 1;
+
+while i <= p - 2 do
+    i := i + 1;
+    # Calculate modulo
+    k := 0;
+    (while !(p - k * i <= i - 1) do
+        k := k + 1);
+    mod := p - k * i;
+
+    if mod = 0 then
+        ans := 0
+    else
+        skip

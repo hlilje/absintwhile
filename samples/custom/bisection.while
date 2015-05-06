@@ -1,0 +1,31 @@
+# Find a root with the bisection method for f(x) = x^2 - 100x + 2400.
+# True roots are `x` = 80 and `x` = 30.
+# Should terminate with `ans` = 40.
+
+# Iter vars
+N := 1;
+M := 1000;
+# Endpoints
+a := 0 - 1;
+b := 100;
+
+while N <= M do
+    N := N + 1;
+    x := (a + b) / 2; # Midpoint
+    fx := (x * x - 100 * x + 2400);
+    fa := (a * a - 100 * a + 2400);
+    if (fx = 0) then # Found solution
+        ans := x
+    else
+        skip;
+    # Check signs
+    if (fx <= 0) then
+        if (fa <= 0) then
+            a := x 
+        else
+            b := x
+    else
+        if !(fa <= 0) then
+            a := x 
+        else
+            b := x

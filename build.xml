@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="semant15-lab1" default="main" basedir=".">
+    <property name="jar.file" value="sem.jar" />
+    <property name="cup.file" value="java-cup-v11a.jar" />
+    <property name="main.class" value="semant.Main" />
+
+    <property name="src.dir" location="semant" />
+    <property name="build.dir" location="build" />
+    <property name="lib.dir" location="lib" />
+    <property name="test.dir" location="samples" />
+
+    <!-- Include all libs in path -->
+    <path id="build.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- Delete created dirs and generated files -->
+    <target name="clean">
+        <delete dir="${build.dir}" />
+        <delete file="${jar.file}" />
+        <delete>
+            <fileset dir="." includes="**/*.class"/>
+        </delete>
+    </target>
+
+    <!-- Create dirs -->
+    <target name="makedir">
+        <mkdir dir="${build.dir}" />
+    </target>
+
+    <!-- Compile the java code -->
+    <target name="compile">
+         <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
+            <classpath>
+                <path id="cup" location="${lib.dir}/${cup.file}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Create the deployable jar file -->
+    <target name="jar" depends="compile">
+        <jar destfile="${jar.file}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+            </manifest>
+            <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
+        </jar>
+    </target>
+
+    <!-- Entry point -->
+    <target name="main" depends="makedir, compile, jar">
+        <description>Main target</description>
+    </target>
+</project>

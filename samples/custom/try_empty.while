@@ -1,0 +1,5 @@
+# should not parse
+
+try
+catch
+    x := 5

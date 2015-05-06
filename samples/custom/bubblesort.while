@@ -1,0 +1,44 @@
+# Sorts 5 integers
+# Should terminate with a=1, b=3, c=4, d=7 and e=8
+
+a := 7;
+b := 8;
+c := 4;
+d := 1;
+e := 3;
+swapped := 1;
+
+while swapped = 1 do
+    swapped := 0;
+
+    if b <= a then
+        swapped := 1;
+        tmp := a;
+        a := b;
+        b := tmp
+    else
+        skip;
+
+    if c <= b then
+        swapped := 1;
+        tmp := b;
+        b := c;
+        c := tmp
+    else
+        skip;
+
+    if d <= c then
+        swapped := 1;
+        tmp := c;
+        c := d;
+        d := tmp
+    else
+        skip;
+
+    if e <= d then
+        swapped := 1;
+        tmp := d;
+        d := e;
+        e := tmp
+    else
+        skip

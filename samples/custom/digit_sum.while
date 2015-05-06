@@ -1,0 +1,17 @@
+# Calculates the digit sum of integer n
+# Should terminate with `ans` = 29
+
+n := 473825;
+sum := 0;
+
+(while !(n <= 0) do
+    # Calculate n modulo 10
+    k := 0;
+    (while !(n - k * 10 <= 9) do
+        k := k + 1);
+    mod := n - k * 10;
+
+    sum := sum + mod;
+    n := n / 10);
+
+ans := sum

@@ -1,0 +1,13 @@
+# Iterative integer division without using the division operator.
+# Should terminate with `ans` = 78.
+
+numer := 1024;
+denom := 13;
+temp := 0;
+n := 0;
+
+while temp <= (numer - denom) do
+    temp := temp + denom;
+    n := n + 1;
+
+ans := n
