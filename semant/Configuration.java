@@ -43,7 +43,7 @@ public class Configuration {
     }
 
     /**
-     * Check if two configurations are the same
+     * Check if two configurations are the same.
      */
     public boolean equals(Object o) {
         if(!(o instanceof Configuration))
@@ -52,6 +52,20 @@ public class Configuration {
         Configuration oc = (Configuration) o;
         return oc.symTable.equals(symTable) &&
                oc.stack.equals(stack) && oc.code.equals(code);
+    }
+
+    /**
+     * Set the code of this configuration.
+     */
+    public void setCode(Code c) {
+        code = c;
+    }
+
+    /**
+     * Get the code of this configuration.
+     */
+    public Code getCode() {
+        return code;
     }
 
     /**
