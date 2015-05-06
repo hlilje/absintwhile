@@ -9,6 +9,7 @@ public abstract class Inst {
     
     
     public final Opcode opcode;
+    public int stmControlPoint;
     
     
     public Inst(Opcode opcode) {
