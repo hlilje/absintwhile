@@ -19,6 +19,11 @@ public class Configuration {
         exceptional = false;
     }
 
+    /**
+     * Return a clone of this configuration,
+     * i.e. a configuration with the same
+     * state, stack, and machine code.
+     */
     public Configuration clone() {
         Configuration clone = new Configuration();
         // clone state
@@ -28,6 +33,25 @@ public class Configuration {
         // clone code
         clone.code = (Code) code.clone();
         return clone;
+    }
+
+    /**
+     * Return the hashCode for this configuration.
+     */
+    public int hashCode() {
+        return symTable.hashCode() ^ stack.hashCode() ^ code.hashCode();
+    }
+
+    /**
+     * Check if two configurations are the same
+     */
+    public boolean equals(Object o) {
+        if(!(o instanceof Configuration))
+            return false;
+
+        Configuration oc = (Configuration) o;
+        return oc.symTable.equals(symTable) &&
+               oc.stack.equals(stack) && oc.code.equals(code);
     }
 
     /**
