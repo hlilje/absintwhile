@@ -4,17 +4,30 @@ import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
+import semant.amsyntax.*;
 
 public class Configuration {
 
     private HashMap<String, Integer> symTable;
     private Stack<Integer> stack;
+    private Code code;
     private boolean exceptional;
 
     public Configuration() {
         symTable = new HashMap<String, Integer>();
         stack = new Stack<Integer>();
         exceptional = false;
+    }
+
+    public Configuration clone() {
+        Configuration clone = new Configuration();
+        // clone state
+        clone.symTable = (HashMap<String, Integer>) symTable.clone();
+        // clone stack
+        clone.stack = (Stack<Integer>) stack.clone();
+        // clone code
+        clone.code = (Code) code.clone();
+        return clone;
     }
 
     /**
