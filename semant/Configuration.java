@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Stack;
 import semant.amsyntax.*;
 
-public class Configuration {
+public class Configuration<T> {
 
-    private HashMap<String, Integer> symTable;
-    private Stack<Integer> stack;
+    private HashMap<String, T> symTable;
+    private Stack<T> stack;
     private Code code;
     private boolean exceptional;
 
     public Configuration() {
-        symTable = new HashMap<String, Integer>();
-        stack = new Stack<Integer>();
+        symTable = new HashMap<String, T>();
+        stack = new Stack<T>();
         exceptional = false;
     }
 
@@ -25,11 +25,11 @@ public class Configuration {
      * state, stack, and machine code.
      */
     public Configuration clone() {
-        Configuration clone = new Configuration();
+        Configuration clone = new Configuration<T>();
         // clone state
-        clone.symTable = (HashMap<String, Integer>) symTable.clone();
+        clone.symTable = (HashMap<String, T>) symTable.clone();
         // clone stack
-        clone.stack = (Stack<Integer>) stack.clone();
+        clone.stack = (Stack<T>) stack.clone();
         // clone code
         clone.code = (Code) code.clone();
         return clone;
@@ -71,28 +71,28 @@ public class Configuration {
     /**
      * Set the value of the given variable.
      */
-    public void setVar(String var, int val) {
+    public void setVar(String var, T val) {
         symTable.put(var, val);
     }
 
     /**
      * Get the value of the given variable.
      */
-    public int getVar(String var) {
+    public T getVar(String var) {
         return symTable.get(var);
     }
 
     /**
      * Push the given value on the stack.
      */
-    public void pushStack(int val) {
+    public void pushStack(T val) {
         stack.push(val);
     }
 
     /**
      * Pop one value from the stack.
      */
-    public int popStack() {
+    public T popStack() {
         return stack.pop();
     }
 
@@ -117,9 +117,9 @@ public class Configuration {
         StringBuilder sb = new StringBuilder();
 
         sb.append("========== Symbol Table ==========\n");
-        for (Map.Entry<String, Integer> entry : symTable.entrySet()) {
+        for (Map.Entry<String, T> entry : symTable.entrySet()) {
             String var = entry.getKey();
-            int val = entry.getValue();
+            T val = entry.getValue();
             sb.append(var + ": " + val + "\n");
         }
 
@@ -127,7 +127,7 @@ public class Configuration {
 
         sb.append("======== Stack (Top-Down) ========\n");
         // Java's stack iterator is reversed
-        for (ListIterator<Integer> it = stack.listIterator(stack.size());
+        for (ListIterator<T> it = stack.listIterator(stack.size());
                 it.hasPrevious();) {
             sb.append(it.previous() + "\n");
         }
