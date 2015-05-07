@@ -1,18 +1,19 @@
 package semant;
 
 import semant.amsyntax.*;
+import semant.signexc.*;
 
 public class VM<T,E> {
 
-    // Value to represent an error
-    private static final int BOT = 0;
     private static boolean DEBUG;
 
-    private Code code;           // Code to be excuted
-    private Configuration<T> conf;  // Current state
-    private int stepCounter = 0; // Current code step
+    private Operations<T, E> op;   // Type of operations to use
+    private Code code;             // Code to be excuted
+    private Configuration<T> conf; // Current state
+    private int stepCounter = 0;   // Current code step
 
-    public VM(Code code, boolean debug) {
+    public VM(Operations<T, E> op, Code code, boolean debug) {
+        this.op = op;
         this.code = code;
         DEBUG = debug;
         conf = new Configuration<T>();
@@ -34,11 +35,7 @@ public class VM<T,E> {
             case ADD:
                 a1 = conf.popStack();
                 a2 = conf.popStack();
-                if (conf.isExceptional())
-                    conf.pushStack(BOT);
-                else
-                    conf.pushStack(a1 + a2);
-                break;
+                conf.pushStack(op.add(a1, a2));
             case AND:
                 a1 = conf.popStack();
                 a2 = conf.popStack();

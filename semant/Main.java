@@ -1,10 +1,13 @@
 package semant;
 
-import semant.amsyntax.Code;
-import semant.amsyntax.Inst;
-import semant.whilesyntax.Stm;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import semant.amsyntax.Code;
+import semant.amsyntax.Inst;
+import semant.signexc.SignExc;
+import semant.signexc.SignExcOps;
+import semant.signexc.TTExc;
+import semant.whilesyntax.Stm;
 
 public class Main {
 
@@ -36,7 +39,7 @@ public class Main {
             System.out.println(">>> START");
         }
 
-        VM vm = new VM<SignExc, TTExc>(am, DEBUG);
+        VM<SignExc, TTExc> vm = new VM<SignExc, TTExc>(new SignExcOps(), am, DEBUG);
 
         // Execute resulting AM Code using a step-function
         if (STEP) {

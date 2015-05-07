@@ -24,8 +24,9 @@ public class Configuration<T> {
      * i.e. a configuration with the same
      * state, stack, and machine code.
      */
-    public Configuration clone() {
-        Configuration clone = new Configuration<T>();
+    @SuppressWarnings("unchecked")
+    public Configuration<T> clone() {
+        Configuration<T> clone = new Configuration<T>();
         // clone state
         clone.symTable = (HashMap<String, T>) symTable.clone();
         // clone stack
@@ -45,11 +46,12 @@ public class Configuration<T> {
     /**
      * Check if two configurations are the same.
      */
+    @SuppressWarnings("unchecked")
     public boolean equals(Object o) {
         if(!(o instanceof Configuration))
             return false;
 
-        Configuration oc = (Configuration) o;
+        Configuration<T> oc = (Configuration<T>) o;
         return oc.symTable.equals(symTable) &&
                oc.stack.equals(stack) && oc.code.equals(code);
     }
