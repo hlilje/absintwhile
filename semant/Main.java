@@ -39,7 +39,7 @@ public class Main {
             System.out.println(">>> START");
         }
 
-        VM<SignExc, TTExc> vm = new VM<SignExc, TTExc>(new SignExcOps(), am, DEBUG);
+        VM<SignExc, TTExc> vm = new VM(new SignExcOps(), am, DEBUG);
 
         // Execute resulting AM Code using a step-function
         if (STEP) {

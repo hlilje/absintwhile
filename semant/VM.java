@@ -9,62 +9,62 @@ public class VM<T,E> {
 
     private Operations<T, E> op;   // Type of operations to use
     private Code code;             // Code to be excuted
-    private Configuration<T, E> conf; // Current state
+    private Configuration conf; // Current state
     private int stepCounter = 0;   // Current code step
 
     public VM(Operations<T, E> op, Code code, boolean debug) {
         this.op = op;
         this.code = code;
         DEBUG = debug;
-        conf = new Configuration<T, E>();
+        conf = new Configuration();
     }
 
     /**
      * Execute one step of the code with the given Configuration `conf`.
      * Return the resulting configuration.
      */
-    private Configuration<T, E> step(Configuration<T, E> conf) {
+    private Configuration step(Configuration conf) {
         if (DEBUG) System.out.println(conf);
 
         Inst inst = code.get(stepCounter);
         if (DEBUG) System.out.println("> " + inst.opcode);
 
         Code c1, c2, c1_2, c2_2;
-        T a, a1, a2;
-        E b, b1, b2;
+        SignExc a, a1, a2;
+        TTExc b, b1, b2;
         switch (inst.opcode) {
             case ADD:
-                a1 = conf.popStackInt();
-                a2 = conf.popStackInt();
-                conf.pushStackInt(op.add(a1, a2));
+                a1 = (SignExc) conf.popStack();
+                a2 = (SignExc) conf.popStack();
+                conf.pushStack(op.add(a1, a2));
                 break;
             case AND:
-                b1 = conf.popStackBool();
-                b2 = conf.popStackBool();
-                conf.pushStackBool(op.and(b1, b2));
+                b1 = (TTExc) conf.popStack();
+                b2 = (TTExc) conf.popStack();
+                conf.pushStack(op.and(b1, b2));
                 break;
             case BRANCH:
-                b = conf.popStackBool();
+                b = (TTExc) conf.popStack();
                 if (!conf.isExceptional())
                     if (b == op.abs(true)) code.addAll(stepCounter + 1, ((Branch) inst).c1);
                     else code.addAll(stepCounter + 1, ((Branch) inst).c2);
                 break;
             case EQ:
-                a1 = conf.popStackInt();
-                a2 = conf.popStackInt();
-                conf.pushStackBool(op.eq(a1, a2));
+                a1 = (SignExc) conf.popStack();
+                a2 = (SignExc) conf.popStack();
+                conf.pushStack(op.eq(a1, a2));
                 break;
             case FALSE:
-                conf.pushStackBool(op.abs(false));
+                conf.pushStack(op.abs(false));
                 break;
             case FETCH:
-                a = conf.getVar(((Fetch) inst).x);
-                conf.pushStackInt(a);
+                a = (SignExc) conf.getVar(((Fetch) inst).x);
+                conf.pushStack(a);
                 break;
             case LE:
-                a1 = conf.popStackInt();
-                a2 = conf.popStackInt();
-                conf.pushStackBool(op.leq(a1, a2));
+                a1 = (SignExc) conf.popStack();
+                a2 = (SignExc) conf.popStack();
+                conf.pushStack(op.leq(a1, a2));
                 break;
             case LOOP:
                 c1 = ((Loop) inst).c1;
@@ -79,36 +79,36 @@ public class VM<T,E> {
                 code.add(stepCounter + c1.size() + 1, new Branch(c1_2, c2_2));
                 break;
             case MULT:
-                a1 = conf.popStackInt();
-                a2 = conf.popStackInt();
-                conf.pushStackInt(op.multiply(a1, a2));
+                a1 = (SignExc) conf.popStack();
+                a2 = (SignExc) conf.popStack();
+                conf.pushStack(op.multiply(a1, a2));
                 break;
             case NEG:
-                b = conf.popStackBool();
-                conf.pushStackBool(op.neg(b));
+                b = (TTExc) conf.popStack();
+                conf.pushStack(op.neg(b));
                 break;
             case NOOP:
                 break;
             case PUSH:
-                conf.pushStackInt(op.abs(((Push) inst).getValue()));
+                conf.pushStack(op.abs(((Push) inst).getValue()));
                 break;
             case STORE:
-                a = conf.popStackInt();
+                a = (SignExc) conf.popStack();
                 if (!conf.isExceptional())
                     conf.setVar(((Store) inst).x, a);
                 break;
             case SUB:
-                a1 = conf.popStackInt();
-                a2 = conf.popStackInt();
-                conf.pushStackInt(op.subtract(a1, a2));
+                a1 = (SignExc) conf.popStack();
+                a2 = (SignExc) conf.popStack();
+                conf.pushStack(op.subtract(a1, a2));
                 break;
             case TRUE:
-                conf.pushStackBool(op.abs(true));
+                conf.pushStack(op.abs(true));
                 break;
             case DIV:
-                a1 = conf.popStackInt();
-                a2 = conf.popStackInt();
-                conf.pushStackInt(op.divide(a1, a2));
+                a1 = (SignExc) conf.popStack();
+                a2 = (SignExc) conf.popStack();
+                conf.pushStack(op.divide(a1, a2));
                 break;
             case TRY:
                 c1 = ((Try) inst).c1;
