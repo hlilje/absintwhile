@@ -2,34 +2,34 @@ package semant;
 
 import semant.amsyntax.*;
 
-public class VM {
+public class VM<T,E> {
 
     // Value to represent an error
     private static final int BOT = 0;
     private static boolean DEBUG;
 
     private Code code;           // Code to be excuted
-    private Configuration conf;  // Current state
+    private Configuration<T> conf;  // Current state
     private int stepCounter = 0; // Current code step
 
     public VM(Code code, boolean debug) {
         this.code = code;
         DEBUG = debug;
-        conf = new Configuration();
+        conf = new Configuration<T>();
     }
 
     /**
      * Execute one step of the code with the given Configuration `conf`.
      * Return the resulting configuration.
      */
-    private Configuration step(Configuration conf) {
+    private Configuration<T> step(Configuration<T> conf) {
         if (DEBUG) System.out.println(conf);
 
         Inst inst = code.get(stepCounter);
         if (DEBUG) System.out.println("> " + inst.opcode);
 
         Code c1, c2, c1_2, c2_2;
-        int a, a1, a2;
+        T a, a1, a2;
         switch (inst.opcode) {
             case ADD:
                 a1 = conf.popStack();
