@@ -45,9 +45,10 @@ public class VM {
                 break;
             case BRANCH:
                 b = (TTExc) conf.popStack();
-                if (!conf.isExceptional())
+                if (b != TTExc.ERR_B) {
                     if (b == op.abs(true)) code.addAll(stepCounter + 1, ((Branch) inst).c1);
                     else code.addAll(stepCounter + 1, ((Branch) inst).c2);
+                }
                 break;
             case EQ:
                 a1 = (SignExc) conf.popStack();
@@ -94,8 +95,7 @@ public class VM {
                 break;
             case STORE:
                 a = (SignExc) conf.popStack();
-                if (!conf.isExceptional())
-                    conf.setVar(((Store) inst).x, a);
+                if (a != SignExc.ERR_A) conf.setVar(((Store) inst).x, a);
                 break;
             case SUB:
                 a1 = (SignExc) conf.popStack();
@@ -108,7 +108,9 @@ public class VM {
             case DIV:
                 a1 = (SignExc) conf.popStack();
                 a2 = (SignExc) conf.popStack();
-                conf.pushStack(op.divide(a1, a2));
+                a = op.divide(a1, a2);
+                if (a == SignExc.ERR_A) conf.setExceptional(true);
+                conf.pushStack(a);
                 break;
             case TRY:
                 c1 = ((Try) inst).c1;
@@ -130,7 +132,6 @@ public class VM {
             default:
                 System.err.println("Invalid opcode");
                 System.exit(1);
-                break;
         }
 
         return conf;
