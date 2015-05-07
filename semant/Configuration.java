@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Stack;
 import semant.amsyntax.*;
 
-public class Configuration<T> {
+public class Configuration<T, E> {
 
     private HashMap<String, T> symTable;
-    private Stack<T> stack;
+    private Stack<Integer> stack;
     private Code code;
     private boolean exceptional;
 
     public Configuration() {
         symTable = new HashMap<String, T>();
-        stack = new Stack<T>();
+        stack = new Stack<Integer>();
         exceptional = false;
     }
 
@@ -25,12 +25,12 @@ public class Configuration<T> {
      * state, stack, and machine code.
      */
     @SuppressWarnings("unchecked")
-    public Configuration<T> clone() {
-        Configuration<T> clone = new Configuration<T>();
+    public Configuration<T, E> clone() {
+        Configuration<T, E> clone = new Configuration<T, E>();
         // clone state
         clone.symTable = (HashMap<String, T>) symTable.clone();
         // clone stack
-        clone.stack = (Stack<T>) stack.clone();
+        clone.stack = (Stack<Integer>) stack.clone();
         // clone code
         clone.code = (Code) code.clone();
         return clone;
@@ -51,7 +51,7 @@ public class Configuration<T> {
         if(!(o instanceof Configuration))
             return false;
 
-        Configuration<T> oc = (Configuration<T>) o;
+        Configuration<T, E> oc = (Configuration<T, E>) o;
         return oc.symTable.equals(symTable) &&
                oc.stack.equals(stack) && oc.code.equals(code);
     }
@@ -87,15 +87,31 @@ public class Configuration<T> {
     /**
      * Push the given value on the stack.
      */
-    public void pushStack(T val) {
-        stack.push(val);
+    public void pushStackInt(T val) {
+        stack.push((Integer) val);
+    }
+
+    /**
+     * Push the given value on the stack.
+     */
+    public void pushStackBool(E val) {
+        stack.push((Integer) val);
     }
 
     /**
      * Pop one value from the stack.
      */
-    public T popStack() {
-        return stack.pop();
+    @SuppressWarnings("unchecked")
+    public T popStackInt() {
+        return (T) stack.pop();
+    }
+
+    /**
+     * Pop one value from the stack.
+     */
+    @SuppressWarnings("unchecked")
+    public E popStackBool() {
+        return (E) stack.pop();
     }
 
     /**
@@ -129,7 +145,7 @@ public class Configuration<T> {
 
         sb.append("======== Stack (Top-Down) ========\n");
         // Java's stack iterator is reversed
-        for (ListIterator<T> it = stack.listIterator(stack.size());
+        for (ListIterator<Integer> it = stack.listIterator(stack.size());
                 it.hasPrevious();) {
             sb.append(it.previous() + "\n");
         }
