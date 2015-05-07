@@ -3,16 +3,16 @@ package semant;
 import semant.amsyntax.*;
 import semant.signexc.*;
 
-public class VM<T,E> {
+public class VM {
 
     private static boolean DEBUG;
 
-    private Operations<T, E> op;   // Type of operations to use
-    private Code code;             // Code to be excuted
-    private Configuration conf; // Current state
-    private int stepCounter = 0;   // Current code step
+    private SignExcOps op; // Type of operations to use
+    private Code code;           // Code to be excuted
+    private Configuration conf;  // Current state
+    private int stepCounter = 0; // Current code step
 
-    public VM(Operations<T, E> op, Code code, boolean debug) {
+    public VM(Code code, boolean debug) {
         this.op = op;
         this.code = code;
         DEBUG = debug;
@@ -58,7 +58,7 @@ public class VM<T,E> {
                 conf.pushStack(op.abs(false));
                 break;
             case FETCH:
-                a = (SignExc) conf.getVar(((Fetch) inst).x);
+                a = conf.getVar(((Fetch) inst).x);
                 conf.pushStack(a);
                 break;
             case LE:

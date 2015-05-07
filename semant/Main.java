@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import semant.amsyntax.Code;
 import semant.amsyntax.Inst;
-import semant.signexc.SignExc;
-import semant.signexc.SignExcOps;
-import semant.signexc.TTExc;
 import semant.whilesyntax.Stm;
 
 public class Main {
@@ -39,7 +36,7 @@ public class Main {
             System.out.println(">>> START");
         }
 
-        VM<SignExc, TTExc> vm = new VM(new SignExcOps(), am, DEBUG);
+        VM vm = new VM(am, DEBUG);
 
         // Execute resulting AM Code using a step-function
         if (STEP) {
