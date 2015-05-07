@@ -4,18 +4,19 @@ import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
-import semant.amsyntax.*;
+import semant.amsyntax.Code;
+import semant.signexc.SignExc;
 
-public class Configuration<T, E> {
+public class Configuration {
 
-    private HashMap<String, T> symTable;
-    private Stack<Integer> stack;
+    private HashMap<String, SignExc> symTable;
+    private Stack<Enum<?>> stack;
     private Code code;
     private boolean exceptional;
 
     public Configuration() {
-        symTable = new HashMap<String, T>();
-        stack = new Stack<Integer>();
+        symTable = new HashMap<String, SignExc>();
+        stack = new Stack<Enum<?>>();
         exceptional = false;
     }
 
@@ -25,12 +26,12 @@ public class Configuration<T, E> {
      * state, stack, and machine code.
      */
     @SuppressWarnings("unchecked")
-    public Configuration<T, E> clone() {
-        Configuration<T, E> clone = new Configuration<T, E>();
+    public Configuration clone() {
+        Configuration clone = new Configuration();
         // clone state
-        clone.symTable = (HashMap<String, T>) symTable.clone();
+        clone.symTable = (HashMap<String, SignExc>) symTable.clone();
         // clone stack
-        clone.stack = (Stack<Integer>) stack.clone();
+        clone.stack = (Stack<Enum<?>>) stack.clone();
         // clone code
         clone.code = (Code) code.clone();
         return clone;
@@ -46,12 +47,11 @@ public class Configuration<T, E> {
     /**
      * Check if two configurations are the same.
      */
-    @SuppressWarnings("unchecked")
     public boolean equals(Object o) {
         if(!(o instanceof Configuration))
             return false;
 
-        Configuration<T, E> oc = (Configuration<T, E>) o;
+        Configuration oc = (Configuration) o;
         return oc.symTable.equals(symTable) &&
                oc.stack.equals(stack) && oc.code.equals(code);
     }
@@ -73,45 +73,29 @@ public class Configuration<T, E> {
     /**
      * Set the value of the given variable.
      */
-    public void setVar(String var, T val) {
+    public void setVar(String var, SignExc val) {
         symTable.put(var, val);
     }
 
     /**
      * Get the value of the given variable.
      */
-    public T getVar(String var) {
+    public SignExc getVar(String var) {
         return symTable.get(var);
     }
 
     /**
      * Push the given value on the stack.
      */
-    public void pushStackInt(T val) {
-        stack.push((Integer) val);
-    }
-
-    /**
-     * Push the given value on the stack.
-     */
-    public void pushStackBool(E val) {
-        stack.push((Integer) val);
+    public void pushStack(Enum<?> val) {
+        stack.push(val);
     }
 
     /**
      * Pop one value from the stack.
      */
-    @SuppressWarnings("unchecked")
-    public T popStackInt() {
-        return (T) stack.pop();
-    }
-
-    /**
-     * Pop one value from the stack.
-     */
-    @SuppressWarnings("unchecked")
-    public E popStackBool() {
-        return (E) stack.pop();
+    public Enum<?> popStack() {
+        return stack.pop();
     }
 
     /**
@@ -135,9 +119,9 @@ public class Configuration<T, E> {
         StringBuilder sb = new StringBuilder();
 
         sb.append("========== Symbol Table ==========\n");
-        for (Map.Entry<String, T> entry : symTable.entrySet()) {
+        for (Map.Entry<String, SignExc> entry : symTable.entrySet()) {
             String var = entry.getKey();
-            T val = entry.getValue();
+            SignExc val = entry.getValue();
             sb.append(var + ": " + val + "\n");
         }
 
@@ -145,7 +129,7 @@ public class Configuration<T, E> {
 
         sb.append("======== Stack (Top-Down) ========\n");
         // Java's stack iterator is reversed
-        for (ListIterator<Integer> it = stack.listIterator(stack.size());
+        for (ListIterator<Enum<?>> it = stack.listIterator(stack.size());
                 it.hasPrevious();) {
             sb.append(it.previous() + "\n");
         }
