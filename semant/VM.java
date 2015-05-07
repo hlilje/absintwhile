@@ -7,15 +7,15 @@ public class VM {
 
     private static boolean DEBUG;
 
-    private SignExcOps op; // Type of operations to use
+    private SignExcOps op;       // Type of operations to use
     private Code code;           // Code to be excuted
     private Configuration conf;  // Current state
     private int stepCounter = 0; // Current code step
 
     public VM(Code code, boolean debug) {
-        this.op = op;
         this.code = code;
         DEBUG = debug;
+        op = new SignExcOps();
         conf = new Configuration();
     }
 
