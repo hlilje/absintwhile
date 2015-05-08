@@ -1,7 +1,5 @@
 package semant;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import semant.amsyntax.Code;
 import semant.amsyntax.Inst;
 import semant.whilesyntax.Stm;
@@ -36,14 +34,7 @@ public class Main {
             System.out.println(">>> START");
         }
 
-        VM vm = new VM(am, DEBUG);
-
-        // Execute resulting AM Code using a step-function
-        if (STEP) {
-            while (vm.executeStep())
-                new BufferedReader(new InputStreamReader(System.in)).readLine();
-        } else {
-            while (vm.executeStep()) {};
-        }
+        VM vm = new VM(am, DEBUG, STEP);
+        vm.execute();
     }
 }
