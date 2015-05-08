@@ -16,6 +16,7 @@ public class VM {
     private SignExcOps op;                   // Type of operations to use
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
+    private int controlPoint;
 
     public VM(Code code, boolean debug, boolean step) {
         DEBUG = debug;
@@ -23,6 +24,7 @@ public class VM {
         op = new SignExcOps();
         visited = new HashSet<Configuration>();
         queue = new LinkedList<Configuration>();
+        controlPoint = 0;
 
         Configuration conf = new Configuration();
         conf.setCode(code);
@@ -35,9 +37,6 @@ public class VM {
      */
     private HashSet<Configuration> step(Configuration conf) {
         if (DEBUG) System.out.println(conf);
-
-        // Break execution if the state is repeated
-        if (visited.contains(conf)) return null;
 
         Inst inst = conf.getCode().get(0);
         if (DEBUG) System.out.println("> " + inst.opcode);
@@ -144,7 +143,6 @@ public class VM {
                 break;
             case STORE:
                 confNew = conf.clone();
-                confNew.pushStack(op.abs(((Push) inst).getValue()));
                 a = (SignExc) confNew.popStack();
                 if (op.possiblyAErr(a)) {
                     confNew = conf.clone();
@@ -210,9 +208,21 @@ public class VM {
      * code can be executed.
      */
     private boolean executeStep() {
-        // Break execution when no more code is available.
-        Configuration conf = queue.getFirst();
-        queue.addAll(step(conf));
+        Configuration conf = queue.removeFirst();
+        int controlPoint = conf.getCode().get(0).stmControlPoint;
+        HashSet<Configuration> configs = step(conf);
+
+        // If the new control point is higher, consider the config visited
+        for (Configuration c : configs) {
+            if (c.getCode().get(0).stmControlPoint > controlPoint)
+                visited.add(c.clone());
+        }
+
+        // Add all non-visited Configurations to the queue
+        for (Configuration c : configs) {
+            if (!visited.contains(c))
+                queue.add(c.clone());
+        }
 
         return queue.size() != 0;
     }
@@ -221,6 +231,9 @@ public class VM {
      * Execute the entire program.
      */
     public void execute() throws IOException {
+        // The first Configuration is always visited
+        visited.add(queue.getFirst().clone());
+
         // Execute resulting AM Code using a step-function
         if (STEP) {
             while (executeStep())

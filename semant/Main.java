@@ -10,10 +10,8 @@ public class Main {
     private static boolean STEP  = false;
 
     public static void main(String[] args) throws Exception {
-        if (args.length > 1 && args[1].equals("-d"))
-            DEBUG = true;
-        if (args.length > 2 && args[2].equals("-s"))
-            STEP = true;
+        if (args.length > 1 && args[1].equals("-d")) DEBUG = true;
+        if (args.length > 2 && args[2].equals("-s")) STEP = true;
 
         // Generate While AST
         Stm s = WhileParser.parse(args[0]);
