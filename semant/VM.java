@@ -39,7 +39,10 @@ public class VM {
         if (DEBUG) System.out.println(conf);
 
         Inst inst = conf.getCode().get(0);
-        if (DEBUG) System.out.println("> " + inst.opcode);
+        if (DEBUG) {
+            System.out.println("> " + inst.opcode + " (ctrl: " +
+                    inst.stmControlPoint + ")");
+        }
 
         HashSet<Configuration> configs = new HashSet<Configuration>();
 
