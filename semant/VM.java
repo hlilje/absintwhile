@@ -115,11 +115,19 @@ public class VM {
                 c1_2 = new Code();
                 c2_2 = new Code();
                 c1_2.addAll(c2);
-                c1_2.add(new Loop(c1, c2));
-                c2_2.add(new Noop());
+
+                Loop loop = new Loop(c1, c2);
+                loop.stmControlPoint = inst.stmControlPoint;
+                c1_2.add(loop);
+
+                Noop noop = new Noop();
+                noop.stmControlPoint = inst.stmControlPoint;
+                c2_2.add(noop);
                 // Insert new code at current position in code
                 confNew.getCode().addAll(0, c1);
-                confNew.getCode().add(c1.size(), new Branch(c1_2, c2_2));
+                Branch branch = new Branch(c1_2, c2_2);
+                branch.stmControlPoint = inst.stmControlPoint;
+                confNew.getCode().add(c1.size(), branch);
                 configs.add(confNew);
                 break;
             case MULT:
@@ -193,7 +201,9 @@ public class VM {
                     }
                 } else {
                     confNew.getCode().addAll(0, c1);
-                    confNew.getCode().add(c1.size(), new Try(null, c2));
+                    Try tr = new Try(null, c2);
+                    tr.stmControlPoint = inst.stmControlPoint;
+                    confNew.getCode().add(c1.size(), tr);
                 }
                 configs.add(confNew);
                 break;
