@@ -153,8 +153,7 @@ public class VM {
                 configs.add(confNew);
                 break;
             case STORE:
-                confNew = conf.clone();
-                a = (SignExc) confNew.popStack();
+                a = (SignExc) conf.popStack();
                 if (op.possiblyAErr(a)) {
                     confNew = conf.clone();
                     configs.add(confNew);
