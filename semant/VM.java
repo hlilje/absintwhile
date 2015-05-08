@@ -214,7 +214,9 @@ public class VM {
 
         // If the new control point is higher, consider the config visited
         for (Configuration c : configs) {
-            if (c.getCode().get(0).stmControlPoint > controlPoint)
+            if (c.getCode().isEmpty())
+                visited.add(c.clone());
+            else if (c.getCode().get(0).stmControlPoint > controlPoint)
                 visited.add(c.clone());
         }
 
