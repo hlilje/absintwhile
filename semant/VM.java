@@ -1,8 +1,10 @@
 package semant;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.LinkedList;
 import semant.amsyntax.*;
 import semant.signexc.*;
 
@@ -11,23 +13,25 @@ public class VM {
     private static boolean DEBUG;
     private static boolean STEP;
 
-    private SignExcOps op;                  // Type of operations to use
-    private Configuration conf;             // Current state
-    private HashSet<Configuration> visited; // Visited configurations
+    private SignExcOps op;                   // Type of operations to use
+    private HashSet<Configuration> visited;  // Visited configurations
+    private LinkedList<Configuration> queue; // BFS queue
 
     public VM(Code code, boolean debug, boolean step) {
         DEBUG = debug;
         STEP = step;
         op = new SignExcOps();
-        conf = new Configuration();
         visited = new HashSet<Configuration>();
+        queue = new LinkedList<Configuration>();
 
+        Configuration conf = new Configuration();
         conf.setCode(code);
+        queue.add(conf);
     }
 
     /**
      * Execute one step of the code with the given Configuration `conf`.
-     * Return the resulting configuration.
+     * Return the set of resulting configurations.
      */
     private HashSet<Configuration> step(Configuration conf) {
         if (DEBUG) System.out.println(conf);
@@ -139,6 +143,7 @@ public class VM {
                 configs.add(confNew);
                 break;
             case STORE:
+                confNew = conf.clone();
                 confNew.pushStack(op.abs(((Push) inst).getValue()));
                 a = (SignExc) confNew.popStack();
                 if (op.possiblyAErr(a)) {
@@ -200,30 +205,22 @@ public class VM {
     }
 
     /**
-     * Perform one execute step of the VM, return `false`
-     * if no more code can be executed.
+     * Perform one execute step of the VM by doing a BFS search
+     * of the configuration space, return `false` if no more
+     * code can be executed.
      */
     private boolean executeStep() {
         // Break execution when no more code is available.
-        if (stepCounter == code.size()) {
-            if (DEBUG) System.out.println(">>> END");
-            System.out.println("======= Final Configuration ======");
-            System.out.println();
-            System.out.println(conf);
-            return false;
-        }
+        Configuration conf = queue.getFirst();
+        queue.addAll(step(conf));
 
-        // Execute one step with the current configuration
-        conf = step(conf);
-        ++stepCounter;
-
-        return true;
+        return queue.size() != 0;
     }
 
     /**
-     * Execute the program.
+     * Execute the entire program.
      */
-    public void execute() {
+    public void execute() throws IOException {
         // Execute resulting AM Code using a step-function
         if (STEP) {
             while (executeStep())
@@ -231,5 +228,7 @@ public class VM {
         } else {
             while (executeStep()) {};
         }
+
+        if (DEBUG) System.out.println(">>> END");
     }
 }
