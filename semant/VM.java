@@ -225,6 +225,16 @@ public class VM {
         int controlPoint = conf.getCode().get(0).stmControlPoint;
         HashSet<Configuration> configs = step(conf);
         System.out.println("confs: " + configs.size());
+
+        // Add all non-visited Configurations to the queue
+        for (Configuration c : configs) {
+            if (!visited.contains(c) && !c.getCode().isEmpty()) {
+                queue.add(c.clone());
+                System.out.println("added to queue");
+            }
+        }
+        System.out.println("q: " + queue.size());
+
         // If the new control point is higher, consider the config visited
         for (Configuration c : configs) {
             if (c.getCode().isEmpty()) {
@@ -236,16 +246,6 @@ public class VM {
                 System.out.println("added conf");
             }
         }
-
-        // Add all non-visited Configurations to the queue
-        for (Configuration c : configs) {
-            if (!visited.contains(c)) {
-                queue.add(c.clone());
-                System.out.println("added to queue");
-            }
-        }
-        
-        System.out.println("q: " + queue.size());
 
         return queue.size() != 0;
     }
