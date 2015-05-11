@@ -34,5 +34,6 @@ public class Main {
 
         VM vm = new VM(am, DEBUG, STEP);
         vm.execute();
+        vm.computeLubs();
     }
 }

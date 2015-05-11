@@ -85,6 +85,13 @@ public class Configuration {
     }
 
     /**
+     * Get the symbol table.
+     */
+    public HashMap<String, SignExc> getSymTable() {
+        return symTable;
+    }
+
+    /**
      * Push the given value on the stack.
      */
     public void pushStack(Enum<?> val) {

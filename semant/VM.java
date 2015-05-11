@@ -3,6 +3,7 @@ package semant;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import semant.amsyntax.*;
@@ -16,6 +17,7 @@ public class VM {
     private SignExcOps op;                   // Type of operations to use
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
+    private HashMap<String, SignExc>[] lubs; // Saved least upper bounds
     private int maxControlPoint;             // Highest control point
 
     public VM(Code code, boolean debug, boolean step) {
@@ -266,5 +268,24 @@ public class VM {
 
         if (DEBUG) System.out.println("Max control point: " + maxControlPoint);
         if (DEBUG) System.out.println(">>> END");
+    }
+
+    /**
+     * Compute the least upper bounds.
+     */
+    @SuppressWarnings("unchecked")
+    public void computeLubs() {
+        lubs = new HashMap[maxControlPoint];
+
+        for (int i = 0; i < lubs.length; ++i)
+            lubs[i] = new HashMap<String, SignExc>();
+
+        // Add the symbol table for the config corresponding to the array index
+        for (Configuration c : visited) {
+            if (c.getCode().size() > 0) {
+                int cp = c.getCode().get(0).stmControlPoint;
+                System.out.println(cp);
+            }
+        }
     }
 }
