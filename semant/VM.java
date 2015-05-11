@@ -262,6 +262,8 @@ public class VM {
             while (executeStep()) {};
         }
 
+        ++maxControlPoint; // Since last control point will have no instructions left
+
         if (DEBUG) System.out.println("Max control point: " + maxControlPoint);
         if (DEBUG) System.out.println(">>> END");
     }
