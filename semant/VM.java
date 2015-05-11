@@ -16,7 +16,6 @@ public class VM {
     private SignExcOps op;                   // Type of operations to use
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
-    private int controlPoint;
 
     public VM(Code code, boolean debug, boolean step) {
         DEBUG = debug;
@@ -24,7 +23,6 @@ public class VM {
         op = new SignExcOps();
         visited = new HashSet<Configuration>();
         queue = new LinkedList<Configuration>();
-        controlPoint = 0;
 
         Configuration conf = new Configuration();
         conf.setCode(code);
@@ -239,8 +237,7 @@ public class VM {
             if (c.getCode().isEmpty()) {
                 visited.add(c.clone());
                 System.out.println("added empty conf");
-            }
-            else if (c.getCode().get(0).stmControlPoint > controlPoint) {
+            } else if (c.getCode().get(0).stmControlPoint > controlPoint) {
                 visited.add(c.clone());
                 System.out.println("added conf");
             }
