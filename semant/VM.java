@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.LinkedList;
 import semant.amsyntax.*;
 import semant.signexc.*;
@@ -15,6 +16,7 @@ public class VM {
     private static boolean STEP;
 
     private SignExcOps op;                   // Type of operations to use
+    private SignExcLattice lattice;           // Type of lattice to use
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
     private HashMap<String, SignExc>[] lubs; // Saved least upper bounds
@@ -24,6 +26,7 @@ public class VM {
         DEBUG = debug;
         STEP = step;
         op = new SignExcOps();
+        lattice = new SignExcLattice();
         visited = new HashSet<Configuration>();
         queue = new LinkedList<Configuration>();
         maxControlPoint = 0;
@@ -282,9 +285,23 @@ public class VM {
 
         // Add the symbol table for the config corresponding to the array index
         for (Configuration c : visited) {
-            if (c.getCode().size() > 0) {
-                int cp = c.getCode().get(0).stmControlPoint;
-                System.out.println(cp);
+            int cp = c.getCode().size() == 0 ? maxControlPoint : c.getCode().get(0).stmControlPoint;        
+            System.out.println(cp);
+            for (Map.Entry<String, SignExc> e : c.getSymTable().entrySet()) {
+                if (lubs[cp-1].containsKey(e.getKey())) {
+                    lubs[cp-1].put(e.getKey(),
+                                   lattice.lub(lubs[cp-1].get(e.getKey()),
+                                                      e.getValue()));
+                } else {
+                    lubs[cp-1].put(e.getKey(), e.getValue());
+                }
+            }
+        }
+        if (DEBUG) {
+            for (int i = 0; i < lubs.length; ++i) {
+                System.out.println("Lubs at control point " + (i+1) + ":");
+                for (Map.Entry<String, SignExc> e : lubs[i].entrySet())
+                    System.out.println(e.getKey() + ": " + e.getValue());
             }
         }
     }
