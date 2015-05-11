@@ -16,6 +16,7 @@ public class VM {
     private SignExcOps op;                   // Type of operations to use
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
+    private int maxControlPoint;             // Highest control point
 
     public VM(Code code, boolean debug, boolean step) {
         DEBUG = debug;
@@ -23,6 +24,7 @@ public class VM {
         op = new SignExcOps();
         visited = new HashSet<Configuration>();
         queue = new LinkedList<Configuration>();
+        maxControlPoint = 0;
 
         Configuration conf = new Configuration();
         conf.setCode(code);
@@ -234,10 +236,14 @@ public class VM {
 
         // If the new control point is higher, consider the config visited
         for (Configuration c : configs) {
+            // Last control point
             if (c.getCode().isEmpty()) {
                 visited.add(c.clone());
                 System.out.println("added empty conf");
             } else if (c.getCode().get(0).stmControlPoint > controlPoint) {
+                // Keep track of the highest control point
+                if (c.getCode().get(0).stmControlPoint > maxControlPoint)
+                    maxControlPoint = c.getCode().get(0).stmControlPoint;
                 visited.add(c.clone());
                 System.out.println("added conf");
             }
@@ -261,6 +267,7 @@ public class VM {
             while (executeStep()) {};
         }
 
+        if (DEBUG) System.out.println("Max control point: " + maxControlPoint);
         if (DEBUG) System.out.println(">>> END");
     }
 }
