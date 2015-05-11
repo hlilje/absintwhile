@@ -53,8 +53,7 @@ public class CompileVisitor implements WhileVisitor {
         Inst inst = new Branch(conditional.s1.accept(this),
                 conditional.s2.accept(this));
         inst.stmControlPoint = controlPoint;
-        c.add(new Branch(conditional.s1.accept(this),
-                conditional.s2.accept(this)));
+        c.add(inst);
         return c;
     }
 
@@ -153,8 +152,8 @@ public class CompileVisitor implements WhileVisitor {
 
     public Code visit(While whyle) {
         Code c = new Code();
-        Inst inst = new Loop(whyle.b.accept(this), whyle.s.accept(this));
         ++controlPoint;
+        Inst inst = new Loop(whyle.b.accept(this), whyle.s.accept(this));
         whyle.controlPoint = controlPoint;
         inst.stmControlPoint = controlPoint;
         c.add(inst);
@@ -163,8 +162,8 @@ public class CompileVisitor implements WhileVisitor {
 
     public Code visit(TryCatch trycatch) {
         Code c = new Code();
-        Inst inst = new Try(trycatch.s1.accept(this), trycatch.s2.accept(this));
         ++controlPoint;
+        Inst inst = new Try(trycatch.s1.accept(this), trycatch.s2.accept(this));
         trycatch.controlPoint = controlPoint;
         inst.stmControlPoint = controlPoint;
         c.add(inst);

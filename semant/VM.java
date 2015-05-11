@@ -223,29 +223,24 @@ public class VM {
         Configuration conf = queue.removeFirst();
         int controlPoint = conf.getCode().get(0).stmControlPoint;
         HashSet<Configuration> configs = step(conf);
-        System.out.println("confs: " + configs.size());
 
         // Add all non-visited Configurations to the queue
         for (Configuration c : configs) {
             if (!visited.contains(c) && !c.getCode().isEmpty()) {
                 queue.add(c.clone());
-                System.out.println("added to queue");
             }
         }
-        System.out.println("q: " + queue.size());
 
         // If the new control point is higher, consider the config visited
         for (Configuration c : configs) {
             // Last control point
             if (c.getCode().isEmpty()) {
                 visited.add(c.clone());
-                System.out.println("added empty conf");
             } else if (c.getCode().get(0).stmControlPoint > controlPoint) {
                 // Keep track of the highest control point
                 if (c.getCode().get(0).stmControlPoint > maxControlPoint)
                     maxControlPoint = c.getCode().get(0).stmControlPoint;
                 visited.add(c.clone());
-                System.out.println("added conf");
             }
         }
 
