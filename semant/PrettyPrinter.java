@@ -1,6 +1,8 @@
 package semant;
 
 import semant.amsyntax.Code;
+import semant.signexc.SignExc;
+import semant.signexc.TTExc;
 import semant.whilesyntax.*;
 import semant.signexc.*;
 import java.util.HashMap;
@@ -131,6 +133,10 @@ public class PrettyPrinter implements WhileVisitor {
     }
 
     public Code visit(While whyle) {
+        TTExc b = vm.getTTLubs()[whyle.controlPoint - 1];
+        System.out.println();
+        System.out.print("  " + b);
+        if (b == TTExc.FF) System.out.print(" (Unreachable code!)");
         System.out.println();
         System.out.print(i + "while ");
         whyle.b.accept(this);

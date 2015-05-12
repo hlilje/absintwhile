@@ -286,6 +286,7 @@ public class VM {
     /**
      * Compute the least upper bounds.
      */
+    @SuppressWarnings("unchecked")
     public void computeLubs() {
         lubs = new HashMap[maxControlPoint];
         zVals  = new SignExc[maxControlPoint];
