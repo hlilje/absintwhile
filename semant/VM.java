@@ -22,16 +22,20 @@ public class VM {
     private SignExc[] zVals;                 // Lubs of Z
     private TTExc[] ttVals;                  // Lubs of TT
     private int maxControlPoint;             // Highest control point
+    private boolean possiblyNormalTermination;
+    private boolean possiblyExceptionalTermination;
 
     public VM(Code code, boolean debug, boolean step) {
-        DEBUG           = debug;
-        STEP            = step;
-        op              = new SignExcOps();
-        zLattice        = new SignExcLattice();
-        ttLattice       = new TTExcLattice();
-        visited         = new HashSet<Configuration>();
-        queue           = new LinkedList<Configuration>();
-        maxControlPoint = 0;
+        DEBUG                          = debug;
+        STEP                           = step;
+        op                             = new SignExcOps();
+        zLattice                       = new SignExcLattice();
+        ttLattice                      = new TTExcLattice();
+        visited                        = new HashSet<Configuration>();
+        queue                          = new LinkedList<Configuration>();
+        maxControlPoint                = 0;
+        possiblyNormalTermination      = false;
+        possiblyExceptionalTermination = false;
 
         Configuration conf = new Configuration();
         conf.setCode(code);
@@ -290,6 +294,12 @@ public class VM {
             int cp = inst == null ? maxControlPoint - 1 :
                 inst.stmControlPoint - 1;
 
+            // Check if the program exited normally
+            if (cp == maxControlPoint - 1) {
+                possiblyNormalTermination = !c.isExceptional();
+                possiblyExceptionalTermination = c.isExceptional();
+            }
+
             if (inst instanceof Store) {
                 zVals[cp] = zVals[cp] != null ? zLattice.lub(zVals[cp],
                         (SignExc) c.getStackTop()) : (SignExc) c.getStackTop();
@@ -313,5 +323,19 @@ public class VM {
      */
     public TTExc[] getTTLubs() {
         return ttVals;
+    }
+
+    /**
+     * Return whether the program exited normally (possibly).
+     */
+    public boolean possiblyNormalTermination() {
+        return possiblyNormalTermination;
+    }
+
+    /**
+     * Return whether the program exited exceptionally (possibly).
+     */
+    public boolean possiblyExceptionalTermination() {
+        return possiblyExceptionalTermination;
     }
 }
