@@ -30,6 +30,8 @@ public class PrettyPrinter implements WhileVisitor {
         SignExc a = vm.getZLubs()[assignment.controlPoint - 1];
         String s = a != null ? a.toString() : "never evaluated";
         System.out.print(" Right-hand side: " + s);
+        if (a == SignExc.ERR_A) System.out.print(" (Exception raiser!)");
+        if (a == SignExc.ANY_A) System.out.print(" (Possible exception raiser!)");
         System.out.println();
         System.out.print(i);
         assignment.x.accept(this);
@@ -199,7 +201,7 @@ public class PrettyPrinter implements WhileVisitor {
     private void printVars(int cp) {
         HashMap<String, SignExc> vars = vm.getVarLubs()[cp];
         StringBuilder sb = new StringBuilder();
-        sb.append(i + "{");        
+        sb.append(i + "{");
 
         for (Map.Entry<String, SignExc> e : vars.entrySet())
             sb.append(e.getKey() + "=" + e.getValue() + ", ");
