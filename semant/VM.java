@@ -16,19 +16,21 @@ public class VM {
 
     private SignExcOps op;                   // Type of operations to use
     private SignExcLattice zLattice;         // Type lattice for Z
-    private TTExcLattice tLattice;           // Type lattice for TT
+    private TTExcLattice ttLattice;          // Type lattice for TT
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
+    private SignExc[] zVals;                 // Lubs of Z
+    private TTExc[] ttVals;                  // Lubs of TT
     private int maxControlPoint;             // Highest control point
 
     public VM(Code code, boolean debug, boolean step) {
-        DEBUG = debug;
-        STEP = step;
-        op = new SignExcOps();
-        zLattice = new SignExcLattice();
-        tLattice = new TTExcLattice();
-        visited = new HashSet<Configuration>();
-        queue = new LinkedList<Configuration>();
+        DEBUG           = debug;
+        STEP            = step;
+        op              = new SignExcOps();
+        zLattice        = new SignExcLattice();
+        ttLattice       = new TTExcLattice();
+        visited         = new HashSet<Configuration>();
+        queue           = new LinkedList<Configuration>();
         maxControlPoint = 0;
 
         Configuration conf = new Configuration();
@@ -75,6 +77,7 @@ public class VM {
                 b = (TTExc) conf.popStack();
                 if (op.possiblyBErr(b)) {
                     confNew = conf.clone();
+                    confNew.setExceptional(true);
                     configs.add(confNew);
                 }
                 if (op.possiblyTrue(b)) {
@@ -161,6 +164,7 @@ public class VM {
                 a = (SignExc) conf.popStack();
                 if (op.possiblyAErr(a)) {
                     confNew = conf.clone();
+                    confNew.setExceptional(true);
                     configs.add(confNew);
                 }
                 if (op.possiblyInt(a)) {
@@ -186,7 +190,6 @@ public class VM {
                 a1 = (SignExc) confNew.popStack();
                 a2 = (SignExc) confNew.popStack();
                 a = op.divide(a1, a2);
-                if (a == SignExc.ERR_A) confNew.setExceptional(true);
                 confNew.pushStack(a);
                 configs.add(confNew);
                 break;
@@ -278,10 +281,8 @@ public class VM {
      * Compute the least upper bounds.
      */
     public void computeLubs() {
-        HashSet<Configuration> storeConfigs  = new HashSet<Configuration>();
-        HashSet<Configuration> branchConfigs = new HashSet<Configuration>();
-        SignExc[] zVals                      = new SignExc[maxControlPoint];
-        TTExc[] tVals                        = new TTExc[maxControlPoint];
+        zVals  = new SignExc[maxControlPoint];
+        ttVals = new TTExc[maxControlPoint];
 
         // Pick out the relevant configurations for the lubs
         for (Configuration c : visited) {
@@ -294,13 +295,23 @@ public class VM {
                         (SignExc) c.getStackTop()) : (SignExc) c.getStackTop();
             }
             if (inst instanceof Branch) {
-                tVals[cp] = tVals[cp] != null ? tLattice.lub(tVals[cp],
+                ttVals[cp] = ttVals[cp] != null ? ttLattice.lub(ttVals[cp],
                         (TTExc) c.getStackTop()) : (TTExc) c.getStackTop();
             }
         }
+    }
 
-        for (SignExc z : zVals) System.out.println(z);
-        System.out.println("================");
-        for (TTExc t : tVals) System.out.println(t);
+    /**
+     * Return the least upper bouds of the Z values.
+     */
+    public SignExc[] getZLubs() {
+        return zVals;
+    }
+
+    /**
+     * Return the least upper bouds of the TT values.
+     */
+    public TTExc[] getTTLubs() {
+        return ttVals;
     }
 }
