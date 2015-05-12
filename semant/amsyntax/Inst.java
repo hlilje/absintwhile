@@ -27,7 +27,8 @@ public abstract class Inst {
         if (!(o instanceof Inst))
             return false;
         
-        return o.toString().equals(toString());
+        return o.toString().equals(toString())
+            && stmControlPoint == ((Inst) o).stmControlPoint;
     }
     
     
