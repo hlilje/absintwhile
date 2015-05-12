@@ -5,7 +5,13 @@ import semant.whilesyntax.*;
 
 public class PrettyPrinter implements WhileVisitor {
 
+    private VM vm;
+
     String i = "";
+
+    public PrettyPrinter(VM vm) {
+        this.vm = vm;
+    }
 
     public Code visit(Conjunction and) {
         and.b1.accept(this);
@@ -20,6 +26,12 @@ public class PrettyPrinter implements WhileVisitor {
         assignment.x.accept(this);
         System.out.print(" := ");
         assignment.a.accept(this);
+        System.out.println(i);
+        System.out.print("{");
+        assignment.x.accept(this);
+        System.out.print("=");
+        System.out.print(vm.getZLubs()[assignment.controlPoint - 1]);
+        System.out.println("}");
         return null;
     }
 
