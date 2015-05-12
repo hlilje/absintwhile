@@ -106,6 +106,13 @@ public class Configuration {
     }
 
     /**
+     * Return the top value of the stack without popping.
+     */
+    public Enum<?> getStackTop() {
+        return stack.peek();
+    }
+
+    /**
      * Return whether the configuration is in an exceptional state.
      */
     public boolean isExceptional() {

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.LinkedList;
 import semant.amsyntax.*;
 import semant.signexc.*;
@@ -16,17 +15,18 @@ public class VM {
     private static boolean STEP;
 
     private SignExcOps op;                   // Type of operations to use
-    private SignExcLattice lattice;           // Type of lattice to use
+    private SignExcLattice zLattice;         // Type lattice for Z
+    private TTExcLattice tLattice;           // Type lattice for TT
     private HashSet<Configuration> visited;  // Visited configurations
     private LinkedList<Configuration> queue; // BFS queue
-    private HashMap<String, SignExc>[] lubs; // Saved least upper bounds
     private int maxControlPoint;             // Highest control point
 
     public VM(Code code, boolean debug, boolean step) {
         DEBUG = debug;
         STEP = step;
         op = new SignExcOps();
-        lattice = new SignExcLattice();
+        zLattice = new SignExcLattice();
+        tLattice = new TTExcLattice();
         visited = new HashSet<Configuration>();
         queue = new LinkedList<Configuration>();
         maxControlPoint = 0;
@@ -241,7 +241,8 @@ public class VM {
             // Last control point
             if (c.getCode().isEmpty()) {
                 visited.add(c.clone());
-            } else if (c.getCode().get(0).stmControlPoint > controlPoint) {
+            // } else if (c.getCode().get(0).stmControlPoint > controlPoint) {
+            } else {
                 // Keep track of the highest control point
                 if (c.getCode().get(0).stmControlPoint > maxControlPoint)
                     maxControlPoint = c.getCode().get(0).stmControlPoint;
@@ -276,33 +277,30 @@ public class VM {
     /**
      * Compute the least upper bounds.
      */
-    @SuppressWarnings("unchecked")
     public void computeLubs() {
-        lubs = new HashMap[maxControlPoint];
+        HashSet<Configuration> storeConfigs  = new HashSet<Configuration>();
+        HashSet<Configuration> branchConfigs = new HashSet<Configuration>();
+        SignExc[] zVals                      = new SignExc[maxControlPoint];
+        TTExc[] tVals                        = new TTExc[maxControlPoint];
 
-        for (int i = 0; i < lubs.length; ++i)
-            lubs[i] = new HashMap<String, SignExc>();
-
-        // Add the symbol table for the config corresponding to the array index
+        // Pick out the relevant configurations for the lubs
         for (Configuration c : visited) {
-            int cp = c.getCode().size() == 0 ? maxControlPoint : c.getCode().get(0).stmControlPoint;        
-            System.out.println(cp);
-            for (Map.Entry<String, SignExc> e : c.getSymTable().entrySet()) {
-                if (lubs[cp-1].containsKey(e.getKey())) {
-                    lubs[cp-1].put(e.getKey(),
-                                   lattice.lub(lubs[cp-1].get(e.getKey()),
-                                                      e.getValue()));
-                } else {
-                    lubs[cp-1].put(e.getKey(), e.getValue());
-                }
+            Inst inst = c.getCode().size() > 0 ? c.getCode().get(0) : null;
+            int cp = inst == null ? maxControlPoint - 1 :
+                inst.stmControlPoint - 1;
+
+            if (inst instanceof Store) {
+                zVals[cp] = zVals[cp] != null ? zLattice.lub(zVals[cp],
+                        (SignExc) c.getStackTop()) : (SignExc) c.getStackTop();
+            }
+            if (inst instanceof Branch) {
+                tVals[cp] = tVals[cp] != null ? tLattice.lub(tVals[cp],
+                        (TTExc) c.getStackTop()) : (TTExc) c.getStackTop();
             }
         }
-        if (DEBUG) {
-            for (int i = 0; i < lubs.length; ++i) {
-                System.out.println("Lubs at control point " + (i+1) + ":");
-                for (Map.Entry<String, SignExc> e : lubs[i].entrySet())
-                    System.out.println(e.getKey() + ": " + e.getValue());
-            }
-        }
+
+        for (SignExc z : zVals) System.out.println(z);
+        System.out.println("================");
+        for (TTExc t : tVals) System.out.println(t);
     }
 }
