@@ -43,6 +43,10 @@ public class PrettyPrinter implements WhileVisitor {
     }
 
     public Code visit(Conditional conditional) {
+        printVars(conditional.controlPoint-1);
+        TTExc b = vm.getTTLubs()[conditional.controlPoint - 1];
+        System.out.print(" Boolean guard: " + b);
+        if (b == TTExc.FF || b == TTExc.TT) System.out.print(" (Unreachable code!)");
         System.out.println();
         System.out.print(i + "if ");
         conditional.b.accept(this);
@@ -133,9 +137,9 @@ public class PrettyPrinter implements WhileVisitor {
     }
 
     public Code visit(While whyle) {
+        printVars(whyle.controlPoint-1);
         TTExc b = vm.getTTLubs()[whyle.controlPoint - 1];
-        System.out.println();
-        System.out.print("  " + b);
+        System.out.print(" Boolean guard: " + b);
         if (b == TTExc.FF) System.out.print(" (Unreachable code!)");
         System.out.println();
         System.out.print(i + "while ");
@@ -157,6 +161,7 @@ public class PrettyPrinter implements WhileVisitor {
     }
 
     public Code visit(TryCatch trycatch) {
+        printVars(trycatch.controlPoint-1);
         System.out.println();
         System.out.print(i + "try");
         indent();
