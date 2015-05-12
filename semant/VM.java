@@ -255,7 +255,6 @@ public class VM {
             // Last control point
             if (c.getCode().isEmpty()) {
                 visited.add(c.clone());
-            // } else if (c.getCode().get(0).stmControlPoint > controlPoint) {
             } else {
                 // Keep track of the highest control point
                 if (c.getCode().get(0).stmControlPoint > maxControlPoint)
