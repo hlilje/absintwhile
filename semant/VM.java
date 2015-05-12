@@ -329,6 +329,13 @@ public class VM {
     }
 
     /**
+     * Return the number of last control point
+     */
+    public int lastControlPoint() {
+        return maxControlPoint;
+    }
+
+    /**
      * Return the least upper bounds of variables.
      */
     public HashMap<String, SignExc>[] getVarLubs() {

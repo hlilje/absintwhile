@@ -34,7 +34,7 @@ public class Main {
         // Pretty print the program with annotations
         PrettyPrinter p = new PrettyPrinter(vm);
         s.accept(p);
-        System.out.println();
         p.printTermination();
+        System.out.println();
     }
 }

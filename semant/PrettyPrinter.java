@@ -205,13 +205,20 @@ public class PrettyPrinter implements WhileVisitor {
 
         for (Map.Entry<String, SignExc> e : vars.entrySet())
             sb.append(e.getKey() + "=" + e.getValue() + ", ");
-        if(!vars.isEmpty()) sb.setLength(sb.length()-2);
+        if (!vars.isEmpty()) sb.setLength(sb.length()-2);
         sb.append("}");
         System.out.println();
         System.out.print(sb);
     }
 
     public void printTermination() {
-
+        printVars(vm.lastControlPoint()-1);
+        if (vm.possiblyNormalTermination()) {
+            if(vm.possiblyExceptionalTermination())
+                System.out.print(" (possibly exceptional termination");
+            else
+                System.out.print(" (normal termination)");
+        } else
+            System.out.print(" (exceptional termination)");
     }
 }
