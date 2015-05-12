@@ -203,15 +203,19 @@ public class VM {
                 confNew = conf.clone();
                 c1 = ((Try) inst).c1;
                 c2 = ((Try) inst).c2;
-                // dont catch outer exceptions
-                if (c1 != null && confNew.isExceptional())
+                // Don't catch outer exceptions
+                if (c1 != null && confNew.isExceptional()) {
+                    configs.add(confNew);
                     break;
+                }
+                // Catch
                 if (c1 == null) {
                     if (confNew.isExceptional()) {
                         if (DEBUG) System.out.println("CATCH EXCEPTION");
                         confNew.setExceptional(false);
                         confNew.getCode().addAll(0, c2);
                     }
+                // Try
                 } else {
                     confNew.getCode().addAll(0, c1);
                     Try tr = new Try(null, c2);
