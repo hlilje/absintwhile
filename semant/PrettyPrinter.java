@@ -2,6 +2,9 @@ package semant;
 
 import semant.amsyntax.Code;
 import semant.whilesyntax.*;
+import semant.signexc.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PrettyPrinter implements WhileVisitor {
 
@@ -21,17 +24,12 @@ public class PrettyPrinter implements WhileVisitor {
     }
 
     public Code visit(Assignment assignment) {
+        printVars(assignment.controlPoint-1);
         System.out.println();
         System.out.print(i);
         assignment.x.accept(this);
         System.out.print(" := ");
         assignment.a.accept(this);
-        System.out.println(i);
-        System.out.print("{");
-        assignment.x.accept(this);
-        System.out.print("=");
-        System.out.print(vm.getZLubs()[assignment.controlPoint - 1]);
-        System.out.println("}");
         return null;
     }
 
@@ -172,5 +170,19 @@ public class PrettyPrinter implements WhileVisitor {
 
     private void outdent() {
         i = i.substring(4);
+    }
+
+    private void printVars(int cp) {
+        HashMap<String, SignExc> vars = vm.getVarLubs()[cp];
+        if(vars.isEmpty()) return;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(i + "{");
+        for (Map.Entry<String, SignExc> e : vars.entrySet())
+            sb.append(e.getKey() + "=" + e.getValue() + ", ");
+        sb.setLength(sb.length()-2);
+        sb.append("}");
+        System.out.println();
+        System.out.print(sb);
     }
 }
