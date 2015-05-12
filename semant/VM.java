@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import semant.amsyntax.*;
 import semant.signexc.*;
 
@@ -21,6 +22,7 @@ public class VM {
     private LinkedList<Configuration> queue; // BFS queue
     private SignExc[] zVals;                 // Lubs of Z
     private TTExc[] ttVals;                  // Lubs of TT
+    private HashMap<String, SignExc>[] lubs; // Lubs of vars
     private int maxControlPoint;             // Highest control point
     private boolean possiblyNormalTermination;
     private boolean possiblyExceptionalTermination;
@@ -285,8 +287,12 @@ public class VM {
      * Compute the least upper bounds.
      */
     public void computeLubs() {
+        lubs = new HashMap[maxControlPoint];
         zVals  = new SignExc[maxControlPoint];
         ttVals = new TTExc[maxControlPoint];
+
+        for (int i = 0; i < lubs.length; ++i)
+            lubs[i] = new HashMap<String, SignExc>();
 
         // Pick out the relevant configurations for the lubs
         for (Configuration c : visited) {
@@ -308,7 +314,24 @@ public class VM {
                 ttVals[cp] = ttVals[cp] != null ? ttLattice.lub(ttVals[cp],
                         (TTExc) c.getStackTop()) : (TTExc) c.getStackTop();
             }
+
+            for (Map.Entry<String, SignExc> e : c.getSymTable().entrySet()) {
+                if (lubs[cp].containsKey(e.getKey())) {
+                    lubs[cp].put(e.getKey(),
+                                   zLattice.lub(lubs[cp].get(e.getKey()),
+                                                      e.getValue()));
+                } else {
+                    lubs[cp].put(e.getKey(), e.getValue());
+                }
+            }
         }
+    }
+
+    /**
+     * Return the least upper bounds of variables.
+     */
+    public HashMap<String, SignExc>[] getVarLubs() {
+        return lubs;
     }
 
     /**
