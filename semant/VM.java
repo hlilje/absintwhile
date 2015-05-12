@@ -24,6 +24,7 @@ public class VM {
     private TTExc[] ttVals;                  // Lubs of TT
     private HashMap<String, SignExc>[] lubs; // Lubs of vars
     private int maxControlPoint;             // Highest control point
+    private int tryDepth, exceptionDepth;    // For handling nested Try Catch
     private boolean possiblyNormalTermination;
     private boolean possiblyExceptionalTermination;
 
@@ -36,6 +37,8 @@ public class VM {
         visited                        = new HashSet<Configuration>();
         queue                          = new LinkedList<Configuration>();
         maxControlPoint                = 0;
+        tryDepth                       = 0;
+        exceptionDepth                 = 0;
         possiblyNormalTermination      = false;
         possiblyExceptionalTermination = false;
 
@@ -83,6 +86,7 @@ public class VM {
             case BRANCH:
                 b = (TTExc) conf.popStack();
                 if (op.possiblyBErr(b)) {
+                    if (!conf.isExceptional()) exceptionDepth = tryDepth;
                     confNew = conf.clone();
                     confNew.setExceptional(true);
                     configs.add(confNew);
@@ -170,13 +174,15 @@ public class VM {
             case STORE:
                 a = (SignExc) conf.popStack();
                 if (op.possiblyAErr(a)) {
+                    if (!conf.isExceptional()) exceptionDepth = tryDepth;
                     confNew = conf.clone();
                     confNew.setExceptional(true);
                     configs.add(confNew);
                 }
                 if (op.possiblyInt(a)) {
                     confNew = conf.clone();
-                    confNew.setVar(((Store) inst).x, a);
+                    if (!conf.isExceptional())
+                        confNew.setVar(((Store) inst).x, a);
                     configs.add(confNew);
                 }
                 break;
@@ -204,20 +210,19 @@ public class VM {
                 confNew = conf.clone();
                 c1 = ((Try) inst).c1;
                 c2 = ((Try) inst).c2;
-                // Don't catch outer exceptions
-                if (c1 != null && confNew.isExceptional()) {
-                    configs.add(confNew);
-                    break;
-                }
                 // Catch
                 if (c1 == null) {
                     if (confNew.isExceptional()) {
                         if (DEBUG) System.out.println("CATCH EXCEPTION");
-                        confNew.setExceptional(false);
-                        confNew.getCode().addAll(0, c2);
+                        // Handle nested Try Catch
+                        if (tryDepth == exceptionDepth)
+                            confNew.setExceptional(false);
                     }
+                    confNew.getCode().addAll(0, c2);
+                    --tryDepth;
                 // Try
                 } else {
+                    ++tryDepth;
                     confNew.getCode().addAll(0, c1);
                     Try tr = new Try(null, c2);
                     tr.stmControlPoint = c2.get(0).stmControlPoint;
