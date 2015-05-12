@@ -27,6 +27,9 @@ public class PrettyPrinter implements WhileVisitor {
 
     public Code visit(Assignment assignment) {
         printVars(assignment.controlPoint-1);
+        SignExc a = vm.getZLubs()[assignment.controlPoint - 1];
+        String s = a != null ? a.toString() : "never evaluated";
+        System.out.print(" Right-hand side: " + s);
         System.out.println();
         System.out.print(i);
         assignment.x.accept(this);
@@ -195,15 +198,18 @@ public class PrettyPrinter implements WhileVisitor {
 
     private void printVars(int cp) {
         HashMap<String, SignExc> vars = vm.getVarLubs()[cp];
-        if(vars.isEmpty()) return;
-
         StringBuilder sb = new StringBuilder();
-        sb.append(i + "{");
+        sb.append(i + "{");        
+
         for (Map.Entry<String, SignExc> e : vars.entrySet())
             sb.append(e.getKey() + "=" + e.getValue() + ", ");
-        sb.setLength(sb.length()-2);
+        if(!vars.isEmpty()) sb.setLength(sb.length()-2);
         sb.append("}");
         System.out.println();
         System.out.print(sb);
+    }
+
+    public void printTermination() {
+
     }
 }

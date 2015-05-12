@@ -32,7 +32,9 @@ public class Main {
         vm.computeLubs();
 
         // Pretty print the program with annotations
-        s.accept(new PrettyPrinter(vm));
+        PrettyPrinter p = new PrettyPrinter(vm);
+        s.accept(p);
         System.out.println();
+        p.printTermination();
     }
 }
