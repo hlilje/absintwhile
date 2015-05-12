@@ -55,6 +55,7 @@ public class VM {
         if (DEBUG) {
             System.out.println("> " + inst.opcode + " (ctrl: " +
                     inst.stmControlPoint + ")");
+            System.out.println("Exceptional state: " + conf.isExceptional());
         }
 
         HashSet<Configuration> configs = new HashSet<Configuration>();

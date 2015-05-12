@@ -34,6 +34,8 @@ public class Configuration {
         clone.stack = (Stack<Enum<?>>) stack.clone();
         // clone code
         clone.code = (Code) code.clone();
+        // clone exceptional state
+        clone.setExceptional(exceptional);
         return clone;
     }
 
@@ -52,8 +54,8 @@ public class Configuration {
             return false;
 
         Configuration oc = (Configuration) o;
-        return oc.symTable.equals(symTable) &&
-               oc.stack.equals(stack) && oc.code.equals(code);
+        return oc.symTable.equals(symTable) && oc.stack.equals(stack)
+               && oc.code.equals(code) && (exceptional == oc.isExceptional());
     }
 
     /**
