@@ -215,7 +215,7 @@ public class VM {
                 } else {
                     confNew.getCode().addAll(0, c1);
                     Try tr = new Try(null, c2);
-                    tr.stmControlPoint = inst.stmControlPoint;
+                    tr.stmControlPoint = c2.get(0).stmControlPoint;
                     confNew.getCode().add(c1.size(), tr);
                 }
                 configs.add(confNew);
