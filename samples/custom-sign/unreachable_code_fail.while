@@ -1,0 +1,5 @@
+# An example of unreachable code that cannot be detected using sign analysis.
+
+x := 5;
+while x <= 4 do
+    x := x + 1
