@@ -1,0 +1,14 @@
+x := 1;
+y := 0-1;
+(while x <= y do
+    x := x+1);
+
+(if x = y then
+    x := 6
+else
+    x := 7);
+
+if y <= x then
+    x := 9
+else
+    x := 10
