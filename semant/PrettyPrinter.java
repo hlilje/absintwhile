@@ -162,6 +162,8 @@ public class PrettyPrinter implements WhileVisitor {
             System.out.print(" (Exception raiser!)");
         if (b == TTExc.ANY_B)
             System.out.print(" (Possible exception raiser!)");
+        if (b == TTExc.NONE_B)
+            System.out.print(" (Use of uninitialised variable!)");
         System.out.println();
         System.out.print(i + "while ");
         whyle.b.accept(this);
