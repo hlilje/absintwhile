@@ -185,6 +185,10 @@ public class VM {
                         confNew.setVar(((Store) inst).x, a);
                     configs.add(confNew);
                 }
+                if (a == SignExc.NONE_A) {
+                    confNew = conf.clone();
+                    configs.add(confNew);
+                }
                 break;
             case SUB:
                 confNew = conf.clone();
