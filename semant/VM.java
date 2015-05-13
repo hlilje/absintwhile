@@ -320,8 +320,10 @@ public class VM {
 
             // Check if the program exited normally
             if (cp == maxControlPoint - 1) {
-                possiblyNormalTermination = !c.isExceptional();
-                possiblyExceptionalTermination = c.isExceptional();
+                if (!possiblyNormalTermination)
+                    possiblyNormalTermination = !c.isExceptional();
+                if (!possiblyExceptionalTermination)
+                    possiblyExceptionalTermination = c.isExceptional();
             }
 
             if (inst instanceof Store) {

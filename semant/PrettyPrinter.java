@@ -223,7 +223,7 @@ public class PrettyPrinter implements WhileVisitor {
         printVars(vm.lastControlPoint()-1);
         if (vm.possiblyNormalTermination()) {
             if(vm.possiblyExceptionalTermination())
-                System.out.print(" (possibly exceptional termination");
+                System.out.print(" (possibly exceptional termination)");
             else
                 System.out.print(" (normal termination)");
         } else {
