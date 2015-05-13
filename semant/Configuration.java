@@ -83,7 +83,10 @@ public class Configuration {
      * Get the value of the given variable.
      */
     public SignExc getVar(String var) {
-        return symTable.get(var) != null ? symTable.get(var) : SignExc.NONE_A;
+        if (symTable.get(var) == null)
+            setVar(var, SignExc.Z);
+        
+        return symTable.get(var);
     }
 
     /**

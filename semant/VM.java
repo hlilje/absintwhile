@@ -177,12 +177,16 @@ public class VM {
                     if (!conf.isExceptional()) exceptionDepth = tryDepth;
                     confNew = conf.clone();
                     confNew.setExceptional(true);
+                    // to initialize x
+                    confNew.getVar(((Store) inst).x);
                     configs.add(confNew);
                 }
                 if (op.possiblyInt(a)) {
                     confNew = conf.clone();
                     if (!conf.isExceptional())
                         confNew.setVar(((Store) inst).x, a);
+                    else // to initialize x
+                        confNew.getVar(((Store) inst).x);
                     configs.add(confNew);
                 }
                 if (a == SignExc.NONE_A) {
@@ -337,6 +341,13 @@ public class VM {
                 } else {
                     lubs[cp].put(e.getKey(), e.getValue());
                 }
+            }
+        }
+        // Make sure all variables exist at all control points
+        for (Map.Entry<String, SignExc> e : lubs[lubs.length-1].entrySet()) {
+            for (int i = 0; i < lubs.length-1; i++) {
+                if (!lubs[i].containsKey(e.getKey()))
+                    lubs[i].put(e.getKey(), SignExc.Z);
             }
         }
     }
