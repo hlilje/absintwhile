@@ -202,6 +202,7 @@ public class VM {
                 confNew = conf.clone();
                 a1 = (SignExc) confNew.popStack();
                 a2 = (SignExc) confNew.popStack();
+                System.out.println("== " + a1 + " & " + a2 + " ==");
                 a = op.divide(a1, a2);
                 confNew.pushStack(a);
                 configs.add(confNew);
@@ -262,8 +263,10 @@ public class VM {
                 visited.add(c.clone());
             } else {
                 // Keep track of the highest control point
-                if (c.getCode().get(0).stmControlPoint > maxControlPoint)
+                if (c.getCode().get(0).stmControlPoint > maxControlPoint) {
                     maxControlPoint = c.getCode().get(0).stmControlPoint;
+                    System.out.println("mcp++");
+                }
                 visited.add(c.clone());
             }
         }
