@@ -1,4 +1,4 @@
-# All RHS shoudl be evaluated
+# All RHS should be evaluated
 
 x := 5;
 y := 2;
