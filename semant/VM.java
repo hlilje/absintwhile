@@ -202,7 +202,6 @@ public class VM {
                 confNew = conf.clone();
                 a1 = (SignExc) confNew.popStack();
                 a2 = (SignExc) confNew.popStack();
-                System.out.println("== " + a1 + " & " + a2 + " ==");
                 a = op.divide(a1, a2);
                 confNew.pushStack(a);
                 configs.add(confNew);
