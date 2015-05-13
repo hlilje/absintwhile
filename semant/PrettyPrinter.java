@@ -32,6 +32,7 @@ public class PrettyPrinter implements WhileVisitor {
         System.out.print(" Right-hand side: " + s);
         if (a == SignExc.ERR_A) System.out.print(" (Exception raiser!)");
         if (a == SignExc.ANY_A) System.out.print(" (Possible exception raiser!)");
+        if (a == SignExc.NONE_A) System.out.print(" (Use of uninitialised variable!)");
         System.out.println();
         System.out.print(i);
         assignment.x.accept(this);
