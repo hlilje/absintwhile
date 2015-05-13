@@ -1,3 +1,6 @@
+# Exception generated outside try, should not be caught by catch.
+# Terminates exceptionally.
+
 x := 4;
 y := 0-1;
 z := 1000 / 0;
