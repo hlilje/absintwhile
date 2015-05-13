@@ -1,0 +1,9 @@
+# Program that never terminates
+
+x := 1;
+(while 0 <= x do
+    if x <= 15 then
+        x := x + 5
+    else
+        x := x - 0);
+y := x / 5
