@@ -346,10 +346,12 @@ public class VM {
             }
         }
         // Make sure all variables exist at all control points
-        for (Map.Entry<String, SignExc> e : lubs[lubs.length-1].entrySet()) {
-            for (int i = 0; i < lubs.length-1; i++) {
-                if (!lubs[i].containsKey(e.getKey()))
-                    lubs[i].put(e.getKey(), SignExc.Z);
+        for (int j = lubs.length-1; j >= 0; j--) {
+            for (Map.Entry<String, SignExc> e : lubs[j].entrySet()) {
+                for (int i = 0; i < lubs.length-1; i++) {
+                    if (!lubs[i].containsKey(e.getKey()))
+                        lubs[i].put(e.getKey(), SignExc.Z);
+                }
             }
         }
     }
