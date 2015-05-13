@@ -1,0 +1,6 @@
+# In this test we are not able do definitely detect whether
+# it terminates normally or exceptionally
+
+x := 7;
+y := 5 / x;
+x := x / y
