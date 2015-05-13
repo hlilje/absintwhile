@@ -30,9 +30,12 @@ public class PrettyPrinter implements WhileVisitor {
         SignExc a = vm.getZLubs()[assignment.controlPoint - 1];
         String s = a != null ? a.toString() : "never evaluated";
         System.out.print(" Right-hand side: " + s);
-        if (a == SignExc.ERR_A) System.out.print(" (Exception raiser!)");
-        if (a == SignExc.ANY_A) System.out.print(" (Possible exception raiser!)");
-        if (a == SignExc.NONE_A) System.out.print(" (Use of uninitialised variable!)");
+        if (a == SignExc.ERR_A)
+            System.out.print(" (Exception raiser!)");
+        if (a == SignExc.ANY_A)
+            System.out.print(" (Possible exception raiser!)");
+        if (a == SignExc.NONE_A)
+            System.out.print(" (Use of uninitialised variable!)");
         System.out.println();
         System.out.print(i);
         assignment.x.accept(this);
@@ -58,6 +61,8 @@ public class PrettyPrinter implements WhileVisitor {
             System.out.print(" (Exception raiser!)");
         if (b == TTExc.ANY_B)
             System.out.print(" (Possible exception raiser!)");
+        if (b == TTExc.NONE_B)
+            System.out.print(" (Use of uninitialised variable!)");
         System.out.println();
         System.out.print(i + "if ");
         conditional.b.accept(this);
