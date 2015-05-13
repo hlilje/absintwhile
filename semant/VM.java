@@ -263,10 +263,8 @@ public class VM {
                 visited.add(c.clone());
             } else {
                 // Keep track of the highest control point
-                if (c.getCode().get(0).stmControlPoint > maxControlPoint) {
+                if (c.getCode().get(0).stmControlPoint > maxControlPoint)
                     maxControlPoint = c.getCode().get(0).stmControlPoint;
-                    System.out.println("mcp++");
-                }
                 visited.add(c.clone());
             }
         }
